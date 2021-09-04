@@ -6,5 +6,5 @@ HUD VERSION DARK
 Hébergeur FiveM Vraiment pas chers c'est ici -> http://fiveheberg.fr/ <br>
 Discord de FiveHeberg.fr -> https://discord.gg/ehcYrtYkYD
 
-<img src="https://i.goopics.net/Gda8p.png">
+<img src="https://i.goopics.net/bP93D.png">
 
