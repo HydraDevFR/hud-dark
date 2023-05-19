@@ -211,87 +211,118 @@ exports("cinema", function(state)
 	menuPaused2()
 end)
 
-exports("info", function()
+local vitesse = 0
+local lastVehicle = nil
 
-	if state and (state == true or state == false) then 
-		UserSakrio = state
-		isMenuPaused = state
-	else
-		UserSakrio = not UserSakrio
-		isMenuPaused = not isMenuPaused
-	end
-
-	menuPaused()
-end)
-
-local SakrivaSve = false
-
-RegisterCommand("hud", function(source, args)
-	local vrsta = args[1]
-
-	if not vrsta then
-		SakrivaSve = not SakrivaSve
-		exports.panama_hudv3:info(SakrivaSve)
-		exports.carandplayerhud:sakrij(SakrivaSve)
-		exports.tokovoip_script:hide(SakrivaSve)
-	else
-
-		if vrsta == "cinema" then
-			exports.panama_hudv3:cinema()
-		elseif vrsta == "info" then
-			exports.panama_hudv3:info()
-		elseif vrsta == "statusi" then
-			exports.carandplayerhud:sakrij()
-		elseif vrsta == "voice" then
-			exports.tokovoip_script:hide()
-		elseif vrsta == "chat" then
-			exports.chat:sakrij()
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(1000)
+		local playerPed = PlayerPedId()
+		local vehicle = GetVehiclePedIsIn(playerPed, false)
+		if vehicle ~= 0 and vehicle ~= nil then
+			lastVehicle = vehicle
 		end
-
 	end
-
 end)
 
-function ImalPhone()
-
-	local Inventory = ESX.GetPlayerData().inventory
-
-	for i=1, #Inventory, 1 do
-		if Inventory[i].name == "white_phone" then
-			if Inventory[i].count > 0 then
-				return true
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(1)
+		local playerPed = PlayerPedId()
+		local vehicle = GetVehiclePedIsIn(playerPed, false)
+		if vehicle ~= 0 and vehicle ~= nil then
+			local speed = GetEntitySpeed(vehicle) * 3.6
+			if speed >= 0 then
+				vitesse = math.floor(speed)
+				SendNUIMessage({
+					action = 'setVitesse',
+					data = vitesse
+				})
+			else
+				vitesse = 0
 			end
-		end
-	end	
-
-	return false
-
-end
-
-local UkljuceneNotifikacije = true
-RegisterCommand("notifikacije", function()
-	UkljuceneNotifikacije = not UkljuceneNotifikacije
-end, false)
-
-
-RegisterNetEvent("panama_hud:tweet", function(tweet)
-	if UkljuceneNotifikacije then
-		if ImalPhone() then
+		else
 			SendNUIMessage({
-				akcija = "tweet",
-				tweet = tweet
+				action = 'setVitessedisplay'
 			})
+			vitesse = 0
 		end
 	end
 end)
 
-RegisterNetEvent("panama_hud:oglas", function(tweet)
-	if UkljuceneNotifikacije then
-		if ImalPhone() then
+local lastFuel = nil
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(1000)
+		local playerPed = PlayerPedId()
+		local vehicle = GetVehiclePedIsIn(playerPed, false)
+		if vehicle ~= 0 and vehicle ~= nil then
+			lastFuel = vehicle
+		end
+	end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(1)
+		local playerPed = PlayerPedId()
+		local vehicle = GetVehiclePedIsIn(playerPed, false)
+		if vehicle ~= 0 and vehicle ~= nil then
+			local fuel = GetVehicleFuelLevel(vehicle)
+			if fuel > 1 then
+				fuel = math.floor(fuel)
+				SendNUIMessage({
+					action = 'setFuel',
+					data = fuel
+				})
+			else
+				fuel = 0
+			end
+		else
 			SendNUIMessage({
-				akcija = "oglas",
-				oglas = tweet
+				action = 'setFueldisplay'
 			})
+			fuel = 0
+		end
+	end
+end)
+
+-- etat du vehicule
+local enginehealt = 0
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(1000)
+		local playerPed = PlayerPedId()
+		local vehicle = GetVehiclePedIsIn(playerPed, false)
+		if vehicle ~= 0 and vehicle ~= nil then
+			enginehealt = vehicle
+		end
+	end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(1)
+		local playerPed = PlayerPedId()
+		local vehicle = GetVehiclePedIsIn(playerPed, false)
+		if vehicle ~= 0 and vehicle ~= nil then
+			local engine = GetVehicleEngineHealth(vehicle)
+			if engine > 1 then
+				engine = math.floor(engine)
+				engine = engine / 10
+				SendNUIMessage({
+					action = 'setEngine',
+					data = engine
+				})
+			else
+				engine = 0
+			end
+		else
+			SendNUIMessage({
+				action = 'setEnginedisplay'
+			})
+			engine = 0
 		end
 	end
 end)
