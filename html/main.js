@@ -138,3 +138,68 @@ $(function () {
 
 	})
 })
+
+$(function () {
+	window.addEventListener('message', function (event) {
+		if (event.data.action == 'setVitesse') {
+			$('.spedometer').css('display', 'block')
+			if (event.data.data == 0) {
+				$('.speed').text('Vous êtes à l\'arret')
+				$('.speed').css('color', 'red')
+			} else {
+				$('.speed').text(event.data.data + ' km/h')
+				$('.speed').css('color', 'green')
+			}
+		} else if (event.data.action == 'setVitessedisplay') {
+			$('.spedometer').css('display', 'none')
+		}
+	})
+})
+
+// fuel
+$(function () {
+	window.addEventListener('message', function (event) {
+		if (event.data.action == 'setFuel') {
+			$('.essence').css('display', 'block')
+			$('.fuel').text(event.data.data + ' litres')
+			if (event.data.data < 20) {
+				$('.fuel').css('color', 'orange')
+			} else if (event.data.data < 10) {
+				$('.fuel').css('color', 'red')
+			} else {
+				$('.fuel').css('color', 'green')
+			}		
+		} else if (event.data.action == 'setFueldisplay') {
+			$('.essence').css('display', 'none')
+		}
+	})
+})
+
+$(function () {
+	window.addEventListener('message', function (event) {
+		if (event.data.action == 'setEngine') {
+			$('.healt-vehicle').css('display', 'block')
+			if (event.data.data == 100 || event.data.data > 60) {
+				$('.engine').text('Bon état')
+				$('.engine').css('color', 'green')
+			} else if (event.data.data < 60 && event.data.data > 30) {
+				$('.engine').text('Réparation recommandée')
+				$('.engine').css('color', 'orange')
+			}
+			else if (event.data.data < 30 && event.data.data > 10) {
+				$('.engine').text('Réparation nécessaire')
+				$('.engine').css('color', 'red')
+			} else if (event.data.data < 10 && event.data.data > 0) {
+				$('.engine').text('Moteur cassé')
+				$('.engine').css('color', 'red')
+			} else {
+				$('.engine').text('Moteur cassé')
+				$('.engine').css('color', 'red')
+			}
+		} else if (event.data.action == 'setEnginedisplay') {
+			$('.healt-vehicle').css('display', 'none')
+		}
+	}
+)})
+
+		
